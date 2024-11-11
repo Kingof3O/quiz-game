@@ -262,7 +262,7 @@ def reveal_votes_admin():
     revealed_answers = [
         {
             "text": answer['text'],
-            "votedBy": ", ".join([vote['user_id'] for vote in answer['votes']]),
+            "votedBy": ", ".join(answer['votes']),
             # Add 'is_correct' field
             "is_correct": answer.get('is_correct', False)
         }
@@ -288,4 +288,4 @@ def handle_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
