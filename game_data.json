@@ -1,0 +1,21 @@
+{
+    "answer_id": 1,
+    "answers": [
+        {
+            "avatar": "/static/avatars/3.png",
+            "id": 1,
+            "is_correct": false,
+            "question_id": 1,
+            "text": "dd",
+            "user_id": "das",
+            "visible": true,
+            "votes": [
+                {
+                    "avatar": "/static/avatars/3",
+                    "user_id": "das"
+                }
+            ]
+        }
+    ],
+    "reveal": true
+}
