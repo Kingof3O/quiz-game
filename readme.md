@@ -1,4 +1,4 @@
-(static/img/logo.webp)
+![Quiz Game Logo](screenshots/logo.png)
 # Quiz Game - Multiplayer Online Game
 
 ## Overview
