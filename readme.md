@@ -2,23 +2,66 @@
 
 ## Overview
 
-Quiz Game is an interactive multiplayer web application where players submit, vote on, and guess answers to various questions. The game combines strategy, creativity, and social interaction.
+Quiz Game is an interactive multiplayer web application that brings excitement and strategy to online gaming. Players submit answers, vote on responses, and compete to showcase their wit and creativity.
 
-## Features
+## Key Features
 
-- Multiplayer Gameplay
-- Answer Submission
-- Voting Mechanism
-- User Avatars
-- Scoring System
-- Admin Controls
+- 🎮 Real-time Multiplayer Gameplay
+- 📝 Dynamic Answer Submission
+- 🗳️ Interactive Voting System
+- 👥 Personalized User Avatars
+- 🏆 Competitive Scoring Mechanism
+- 🔐 Secure Admin Controls
+
+## Technology Stack
+
+- **Backend**: Python Flask
+- **Frontend**: HTML, CSS, JavaScript
+- **Real-time Communication**: Socket.IO
+- **Styling**: Bootstrap
+
+## Game Mechanics
+
+1. **Player Mode**
+   - Login with unique credentials
+   - Submit creative answers to questions
+   - Vote on other players' responses
+   - Earn points based on votes and accuracy
+
+2. **Admin Mode**
+   - Manage game questions
+   - Control game flow
+   - Reveal and calculate points
+   - Moderate gameplay
+
+## Screenshots
+
+### Login Screens
+| Login Screen | Login with Name |
+|--------------|-----------------|
+| ![Login Screen](screenshots/1-login.png) | ![Login with Name](screenshots/2-login-name.png) |
+
+### Game Interface
+| Homepage | Admin Screen |
+|----------|--------------|
+| ![Homepage](screenshots/3-homepage.png) | ![Admin Screen](screenshots/4-admin-screen.png) |
+
+### Game Progression
+| After Revealing Answer | After Mark as Correct |
+|------------------------|------------------------|
+| ![After Revealing](screenshots/5-after-revealing-answer.png) | ![Mark as Correct](screenshots/6-after-markascorrect-and-reveal-answers.png) |
+
+### Final View
+| Final Admin View |
+|------------------|
+| ![Final Admin View](screenshots/7-final-view-of-admin-screen.png) |
 
 ## Prerequisites
 
 - Python 3.8+
 - pip
 
-## Setup
+## Installation
 
 1. Clone the repository
    ```bash
@@ -51,28 +94,11 @@ Quiz Game is an interactive multiplayer web application where players submit, vo
 python app.py
 ```
 
-## Game Modes
+## Security Notes
 
-### Player Mode
-- Login with user password
-- Submit answers
-- Vote on answers
-- Earn points
-
-### Admin Mode
-- Manage questions
-- Control game state
-- Calculate points
-
-## Security
-
-- Use strong passwords
-- Keep `.env` private
+- Use strong, unique passwords
+- Keep `.env` file private
 - Do not share credentials
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file
 
 ## Contributing
 
@@ -81,3 +107,14 @@ MIT License - see [LICENSE](LICENSE) file
 3. Commit changes
 4. Push to branch
 5. Open pull request
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## Future Enhancements
+
+- [ ] Add more question types
+- [ ] Implement advanced user authentication
+- [ ] Create global leaderboard
+- [ ] Support multiple languages
