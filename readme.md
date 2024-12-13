@@ -1,4 +1,6 @@
-![Quiz Game Logo](screenshots/logo.png)
+<p align="center">
+  <img src="screenshots/logo.png" alt="Quiz Game Logo">
+</p>
 # Quiz Game - Multiplayer Online Game
 
 ## Overview
