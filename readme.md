@@ -1,3 +1,4 @@
+(static/img/logo.webp)
 # Quiz Game - Multiplayer Online Game
 
 ## Overview
