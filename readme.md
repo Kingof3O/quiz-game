@@ -22,7 +22,7 @@ Quiz Game is an interactive multiplayer web application where players submit, vo
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/quiz-game.git
+   git clone https://github.com/Kingof3O/quiz-game.git
    cd quiz-game
    ```
 
