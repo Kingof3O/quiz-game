@@ -1,7 +1,9 @@
 <p align="center">
   <img src="screenshots/logo.png" alt="Quiz Game Logo">
 </p>
+<p align="center">
 # Quiz Game - Multiplayer Online Game
+</p>
 
 ## Overview
 
