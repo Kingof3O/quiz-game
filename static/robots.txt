@@ -1,0 +1,18 @@
+# Global rules
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /game
+Allow: /static/img/
+Allow: /static/avatars/
+Disallow: /admin
+Disallow: /admin_login
+Disallow: /socket.io/
+Disallow: /clear_data
+Disallow: /userlogin
+
+# Crawl-delay
+Crawl-delay: 10
+
+# Sitemap
+Sitemap: https:/you-website-link/sitemap.xml

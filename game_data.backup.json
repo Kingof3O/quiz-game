@@ -1,0 +1,87 @@
+{
+    "questions": [
+        {
+            "id": 1,
+            "text": "What is your favorite animal?"
+        },
+        {
+            "id": 2,
+            "text": "test2"
+        },
+        {
+            "id": 3,
+            "text": "test3"
+        },
+        {
+            "id": 4,
+            "text": "Test ?"
+        }
+    ],
+    "answers": [
+        {
+            "avatar": "/static/avatars/1.webp",
+            "id": 1,
+            "is_correct": true,
+            "question_id": 1,
+            "random_num": 40,
+            "text": "",
+            "username": "Test",
+            "visible": true,
+            "votes": []
+        },
+        {
+            "avatar": "/static/avatars/1.webp",
+            "id": 2,
+            "is_correct": false,
+            "question_id": 1,
+            "random_num": 77,
+            "text": "Test",
+            "username": "Test",
+            "visible": true,
+            "votes": []
+        }
+    ],
+    "votes": [],
+    "reveal": true,
+    "users": [
+        {
+            "username": "test1",
+            "avatar": "/static/avatars/1.webp",
+            "score": 5
+        },
+        {
+            "username": "test2",
+            "avatar": "/static/avatars/2.webp",
+            "score": 3
+        },
+        {
+            "username": "test",
+            "avatar": "/static/avatars/2.webp",
+            "score": -1
+        },
+        {
+            "username": "Test",
+            "avatar": "/static/avatars/1.webp",
+            "score": 0
+        },
+        {
+            "username": "333",
+            "avatar": "/static/avatars/1.webp",
+            "score": 0
+        },
+        {
+            "username": "rfg",
+            "avatar": "/static/avatars/3.webp",
+            "score": 0
+        },
+        {
+            "username": "123",
+            "avatar": "/static/avatars/1.webp",
+            "score": 0
+        }
+    ],
+    "current_question": {
+        "id": 3,
+        "text": "test3"
+    }
+}

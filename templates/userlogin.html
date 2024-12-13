@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Quiz Game - An exciting multiplayer game of deception and strategy. Join now and test your bluffing skills!">
+    <meta name="keywords" content="Quiz Game, online game, multiplayer game, poker game, bluffing game, strategy game">
+    <meta name="author" content="KF Game">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https:/you-website-link/">
+    <meta property="og:title" content="Quiz Game - Online Multiplayer Game">
+    <meta property="og:description" content="Join the exciting world of Quiz Game - where strategy meets deception!">
+    <meta property="og:image" content="https:/you-website-link/static/img/logo.webp">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https:/you-website-link/">
+    <meta property="twitter:title" content="Quiz Game - Online Multiplayer Game">
+    <meta property="twitter:description" content="Join the exciting world of Quiz Game - where strategy meets deception!">
+    <meta property="twitter:image" content="https:/you-website-link/static/img/logo.webp">
+
+    <meta name="robots" content="index, follow">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Quiz Game - Multiplayer Card Game">
+    <meta name="twitter:description"
+        content="Join Quiz Game for exciting multiplayer card games with friends and test your bluffing skills.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='fav/logo.png') }}">
+    <link rel="icon" href="{{ url_for('static', filename='fav/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <title>Quiz Game - Enter Username and Select Avatar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.0.0/dist/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+</head>
+
+<body class="bg-dark bg-opacity-75">
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card p-4" style="max-width: 400px; width: 100%; background-color: #2F2F2F; border-radius: 10px;">
+            <h4 class="card-title text-center text-white">Enter Username and Select Avatar</h4>
+            <form id="usernameForm" method="POST" autocomplete="off">
+                <div class="mb-3">
+                    <input type="text" name="username" class="form-control text-white bg-dark border-0"
+                        placeholder="Enter Your Name" required autocomplete="off">
+                </div>
+
+                <!-- Avatar Selection -->
+                <div id="avatarSelection" class="avatar-selection">
+                    <img src="{{ url_for('static', filename='avatars/1.webp') }}" alt="Avatar 1" class="avatar" data-avatar="/static/avatars/1.webp">
+                    <img src="{{ url_for('static', filename='avatars/2.webp') }}" alt="Avatar 2" class="avatar" data-avatar="/static/avatars/2.webp">
+                    <img src="{{ url_for('static', filename='avatars/3.webp') }}" alt="Avatar 3" class="avatar" data-avatar="/static/avatars/3.webp">
+                    <img src="{{ url_for('static', filename='avatars/4.webp') }}" alt="Avatar 4" class="avatar" data-avatar="/static/avatars/4.webp">
+                    <img src="{{ url_for('static', filename='avatars/5.webp') }}" alt="Avatar 5" class="avatar" data-avatar="/static/avatars/5.webp">
+                    <img src="{{ url_for('static', filename='avatars/6.webp') }}" alt="Avatar 6" class="avatar" data-avatar="/static/avatars/6.webp">
+                    <img src="{{ url_for('static', filename='avatars/7.webp') }}" alt="Avatar 7" class="avatar" data-avatar="/static/avatars/7.webp">
+                    <img src="{{ url_for('static', filename='avatars/8.webp') }}" alt="Avatar 8" class="avatar" data-avatar="/static/avatars/8.webp">
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedAvatar = '';
+
+        // Handle avatar selection
+        document.querySelectorAll('.avatar').forEach(function (avatar) {
+            avatar.addEventListener('click', function () {
+                // Deselect all avatars
+                document.querySelectorAll('.avatar').forEach(function (img) {
+                    img.classList.remove('selected');
+                });
+
+                // Select the clicked avatar
+                avatar.classList.add('selected');
+                selectedAvatar = avatar.getAttribute('data-avatar');
+            });
+        });
+
+        // Form submission
+        document.getElementById("usernameForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const username = document.querySelector("input[name='username']").value;
+
+            if (!selectedAvatar) {
+                Swal.fire({
+                    title: "Please select an avatar",
+                    icon: "error"
+                });
+                return;
+            }
+
+            fetch('/userlogin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ username: username, avatar: selectedAvatar })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        Swal.fire({
+                            title: "Try again",
+                            text: `Oops... ${data.error}`,
+                            icon: "error"
+                        });
+                    } else {
+                        window.location.href = data.next;
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: "Error",
+                        text: `Something went wrong: ${error}`,
+                        icon: "error"
+                    });
+                });
+        });
+        
+    </script>
+</body>
+
+</html>

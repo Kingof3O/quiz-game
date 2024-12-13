@@ -1,363 +1,1114 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Control Panel</title>
+
+    <meta name="description"
+
+        content="Play Quiz Game - An exciting multiplayer game of deception and strategy. Join now and test your bluffing skills!">
+
+    <meta name="keywords"
+
+        content="Quiz Game, online game, multiplayer game, poker game, bluffing game, strategy game">
+
+    <meta name="author" content="KF Game">
+
+
+
+    <!-- Open Graph / Facebook -->
+
+    <meta property="og:type" content="website">
+
+    <meta property="og:url" content="https:/you-website-link/">
+
+    <meta property="og:title" content="Quiz Game - Online Multiplayer Game">
+
+    <meta property="og:description" content="Join the exciting world of Quiz Game - where strategy meets deception!">
+
+    <meta property="og:image" content="https:/you-website-link/static/img/logo.webp">
+
+
+
+    <!-- Twitter -->
+
+    <meta property="twitter:card" content="summary_large_image">
+
+    <meta property="twitter:url" content="https:/you-website-link/">
+
+    <meta property="twitter:title" content="Quiz Game - Online Multiplayer Game">
+
+    <meta property="twitter:description"
+
+        content="Join the exciting world of Quiz Game - where strategy meets deception!">
+
+    <meta property="twitter:image" content="https:/you-website-link/static/img/logo.webp">
+
+
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="twitter:title" content="Quiz Game - Multiplayer Card Game">
+
+    <meta name="twitter:description"
+
+        content="Join Quiz Game for exciting multiplayer card games with friends and test your bluffing skills.">
+
+    <meta name="twitter:image" content="{{ url_for('static', filename='fav/logo.png') }}">
+
+    <link rel="icon" href="{{ url_for('static', filename='fav/favicon.ico') }}" type="image/x-icon">
+
+
+
+    <title>Quiz Game - Admin Panel</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        .card {
-            color: #9C9C9C;
-            background-color: #2F2F2F;
-            /* Gray background for the whole card */
-            border: 0px solid rgb(248, 7, 7);
-            /* White border around the card */
-            border-radius: 10px;
-            /* Optional: Rounded corners */
-            overflow: hidden;
-            margin: 0.25em;
-            /* To ensure no content overflow outside the card */
+
+        /* Change text color inside SweetAlert2 alerts to white */
+
+        .swal2-html-container {
+
+            color: white !important;
+
         }
+
+
+
+        /* You can also customize other parts of the alert, if needed */
+
+        .swal2-title {
+
+            color: white !important;
+
+        }
+
+
+
+        .card {
+
+            color: #9C9C9C;
+
+            background-color: #2F2F2F;
+
+            /* Gray background for the whole card */
+
+            border: 0px solid rgb(248, 7, 7);
+
+            /* White border around the card */
+
+            border-radius: 10px;
+
+            /* Optional: Rounded corners */
+
+            overflow: hidden;
+
+            margin: 0.25em;
+
+            /* To ensure no content overflow outside the card */
+
+        }
+
+
 
         /* Before click (default state) */
+
         .form-select {
+
             color: #9C9C9C !important;
+
             background-color: #2F2F2F;
+
             border: 1px solid transparent;
+
             /* Default border (no border on hover or focus) */
+
         }
+
+
 
         .form-select::placeholder {
+
             color: #9C9C9C !important;
+
             background-color: #2F2F2F;
+
             border: 1px solid transparent;
+
         }
+
+
 
         /* After click (when focused) */
+
         .form-select:focus {
+
             color: #FFFFFF;
+
             background-color: #3F3F3F;
+
         }
+
+
 
         /* After hover (when the element is hovered over) */
+
         .form-select:hover {
+
             background-color: #444444;
+
             /* Lighter background color when hovered */
+
         }
+
+
 
         .card-body {
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
+
             background-color: transparent;
+
         }
+
+
 
         body {
+
             position: relative;
-            background-image: url('../static/img/1.webp');
+
+            background-image: url('../static/img/bg.webp');
+
             background-size: cover;
+
             /* background-position: center center; */
+
             background-repeat: no-repeat;
+
             background-color: rgba(0, 0, 0, 0.175);
+
         }
+
+
 
         .card-body img {
+
             margin-right: 15px;
+
         }
+
+
 
         .text-color {
+
             color: white;
+
         }
+
+
 
         .vote-btn {
+
             margin-left: auto;
+
             /* Pushes the button to the far right */
+
         }
+
+
 
         /* Ensure the cards are stacked vertically */
+
         .row {
+
             display: flex;
+
             /* Stack the cards vertically */
+
         }
+
+
 
         .col-12 {
+
             margin-bottom: 1rem;
+
             /* Adds space between cards */
+
         }
+
     </style>
+
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
     <script>
+
         const socket = io.connect('http://localhost:5000');
+
         let answers = [];
 
+
+
         // Fetch questions list from server on page load
+
         function fetchQuestions() {
+
             fetch('/get_questions')
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     const questionSelect = document.getElementById('questionSelect');
+
                     questionSelect.innerHTML =
+
                         '<option selected disabled>Select a question</option>'; // Reset options
 
+
+
                     data.questions.forEach(question => {
+
                         const option = document.createElement('option');
+
                         option.value = question.id;
+
                         option.textContent = question.text;
+
                         questionSelect.appendChild(option);
+
                     });
+
                 })
+
                 .catch(error => console.error('Error fetching questions:', error));
+
         }
+
+
 
         function toggleAnswerVisibility(answerId) {
+
             fetch('/toggle_answer_visibility', {
+
                 method: 'POST',
+
                 headers: {
+
                     'Content-Type': 'application/json'
+
                 },
+
                 body: JSON.stringify({
+
                     answer_id: answerId
+
                 })
+
             })
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     // Find the button element and update its text
+
                     const buttonElement = document.getElementById(`toggleButton-${data.answer_id}`);
+
                     if (data.visible) {
+
                         buttonElement.textContent =
+
                             'Hide Answer'; // Change to "Hide Answer" if the answer is visible
+
                     } else {
+
                         buttonElement.textContent =
+
                             'Show Answer'; // Change to "Show Answer" if the answer is hidden
+
                     }
-                    alert(
-                        `Visibility for answer ${data.answer_id} has been ${data.visible ? 'enabled' : 'disabled'}.`
-                    );
+
+                    Swal.fire({
+
+                        title: "Visibility Status",
+
+                        text: `Visibility for answer ${data.answer_id} has been ${data.visible ? 'disabled' : 'enabled'}.`,
+
+                        icon: data.visible ? "error" : "success",
+
+                        confirmButtonText: "OK"
+
+                    });
+
+
+
                 })
+
                 .catch(error => console.error('Error toggling answer visibility:', error));
+
         }
+
         let votesRevealed = false;
 
+
+
         // Reveal votes and toggle visibility
+
         function revealVotes() {
+
             fetch('/reveal_votes_admin', {
+
                 method: 'POST',
+
                 headers: {
+
                     'Content-Type': 'application/json'
+
                 }
+
             })
+
                 .then(response => response.json())
+
                 .then(data => {
-                    alert("Votes revealed to all players!");
+
+                    Swal.fire({
+
+                        title: "Votes Revealed",
+
+                        text: "Votes revealed to all players!",
+
+                        icon: "info",
+
+                        confirmButtonText: "OK"
+
+                    });
+
                     fetchAnswers(); // Fetch the answers again after revealing votes
+
                     toggleVisibility(); // Toggle the visibility of the answers
+
                 })
+
                 .catch(error => console.error('Error revealing votes:', error));
+
         }
+
+
 
         // Set next question based on dropdown selection
+
         function setNextQuestion() {
+
             const questionId = document.getElementById('questionSelect').value;
+
+
 
             if (!questionId) {
-                alert("Please select a question.");
+
+                Swal.fire({
+
+                    title: "Selection Required",
+
+                    text: "Please select a question.",
+
+                    icon: "warning",
+
+                    confirmButtonText: "OK"
+
+                });
+
                 return;
+
             }
+
+
 
             fetch('/set_next_question', {
+
                 method: 'POST',
+
                 headers: {
+
                     'Content-Type': 'application/json'
+
                 },
+
                 body: JSON.stringify({
+
                     question_id: parseInt(questionId)
+
                 })
+
             })
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     if (data.success) {
-                        alert(`Next question set: ${data.question.text}`);
+
+                        Swal.fire({
+
+                            title: "Success",
+
+                            text: `Next question set: ${data.question.text}`,
+
+                            icon: "success",
+
+                            confirmButtonText: "OK"
+
+                        });
+
                     } else {
-                        alert("Failed to set the next question.");
+
+                        Swal.fire({
+
+                            title: "Error",
+
+                            text: "Failed to set the next question.",
+
+                            icon: "error",
+
+                            confirmButtonText: "OK"
+
+                        });
+
                     }
+
                 })
+
                 .catch(error => console.error('Error setting next question:', error));
+
         }
+
+
 
         // Fetch and display answers
+
         function fetchAnswers() {
+
             fetch('/get_game_state')
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     answers = data.answers; // The answers array is updated with the latest data
+
                     updatePage(); // Update the UI with the updated answers
+
                 })
+
                 .catch(error => console.error('Error fetching answers:', error));
+
         }
+
+
 
         // Update the page with answers and votes
+
         function updatePage() {
+
             const answersContainer = document.getElementById('answers');
+
             answersContainer.innerHTML = ''; // Clear previous answers
 
+
+
             answers.forEach(answer => {
+
                 const answerElement = document.createElement('div');
+
                 answerElement.classList.add('col-sm-12', 'col-md-6', 'mb-4', 'justify-content-center');
+
                 answerElement.id = `answer-${answer.id}`; // Give each answer an ID for easy access
+
                 answerElement.innerHTML = `
+
     <div class="card shadow-sm">
+
         <div class="card-body">
+
+            <h5 class="card-title text-info">Created By: ${answer.username}</h5>
+
             <h5 class="card-title text-primary">Answer: ${answer.text}</h5>
-            <p class="card-text"><strong>Voted By:</strong> ${answer.votes.map(vote => vote.user_id).join(' ')}</p>
+
+            <p class="card-text"><strong>Voted By:</strong> ${answer.votes.map(vote => vote.username).join(', ')}</p>
+
             <p class="card-text"><strong>Correct:</strong> ${answer.is_correct ? 'Yes' : 'No'}</p>
+
             <p class="card-text"><strong>Visible:</strong> ${answer.visible ? 'Yes' : 'No'}</p>
+
             <div class="d-flex justify-content-start">
+
                 <button class="btn ${answer.is_correct ? 'btn-danger' : 'btn-success'}" 
+
                         onclick="markAsCorrect(${answer.id}, this)">
+
                     ${answer.is_correct ? 'Mark as Incorrect' : 'Mark as Correct'}
+
                 </button>
+
                 <button id="toggleButton-${answer.id}" class="btn ${answer.visible ? 'btn-secondary' : 'btn-light'} ms-3" 
+
                         onclick="toggleAnswerVisibility(${answer.id})">
+
                     ${answer.visible ? 'Hide Answer' : 'Show Answer'}
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
 `;
+
                 answersContainer.appendChild(answerElement);
+
             });
+
         }
+
+
 
         function markAsCorrect(answerId, buttonElement) {
-    fetch('/mark_correct', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            answer_id: answerId, // The ID of the answer to mark as correct
-            answers: answers // Send the entire answers array to the server
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Log the server response to inspect it
-        if (data.success) {
-            const updatedAnswer = data.answers.find(answer => answer.id === answerId);
 
-            // Update the button text based on the new state
-            buttonElement.textContent = updatedAnswer.is_correct ? 'Mark as Incorrect' :
-                'Mark as Correct';
-        } else {
-            alert("Failed to mark answer.");
+            fetch('/mark_correct', {
+
+                method: 'POST',
+
+                headers: {
+
+                    'Content-Type': 'application/json'
+
+                },
+
+                body: JSON.stringify({
+
+                    answer_id: answerId, // The ID of the answer to mark as correct
+
+                    answers: answers // Send the entire answers array to the server
+
+                })
+
+            })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    console.log(data); // Log the server response to inspect it
+
+                    if (data.success) {
+
+                        const updatedAnswer = data.answers.find(answer => answer.id === answerId);
+
+
+
+                        // Update the button text based on the new state
+
+                        buttonElement.textContent = updatedAnswer.is_correct ? 'Mark as Incorrect' :
+
+                            'Mark as Correct';
+
+                    } else {
+
+                        Swal.fire({
+
+                            title: "Error",
+
+                            text: "Failed to mark answer.",
+
+                            icon: "error",
+
+                            confirmButtonText: "OK"
+
+                        });
+
+                    }
+
+                })
+
+                .catch(error => console.error('Error marking answer:', error));
+
         }
-    })
-    .catch(error => console.error('Error marking answer:', error));
-}
+
+
 
         // Add new question
+
         function addQuestion() {
+
             const questionText = prompt("Enter the new question:");
 
+
+
             if (questionText) {
+
                 fetch('/add_question', {
+
                     method: 'POST',
+
                     headers: { 'Content-Type': 'application/json' },
+
                     body: JSON.stringify({ text: questionText })
+
                 })
+
                     .then(response => response.json())
+
                     .then(data => {
+
                         if (data.success) {
-                            alert('Question added successfully!');
+
+                            Swal.fire({
+
+                                title: "Success",
+
+                                text: "Question added successfully!",
+
+                                icon: "success",
+
+                                confirmButtonText: "OK"
+
+                            });
+
                             fetchQuestions(); // Refresh the question list
+
                         }
+
                     })
+
                     .catch(error => console.error('Error adding question:', error));
+
             }
+
         }
+
+
 
         // Remove question
+
         function removeQuestion() {
+
             const questionId = document.getElementById('questionSelect').value;
 
+
+
             if (questionId) {
+
                 fetch('/remove_question', {
+
                     method: 'POST',
+
                     headers: { 'Content-Type': 'application/json' },
+
                     body: JSON.stringify({ id: parseInt(questionId) })
+
                 })
+
                     .then(response => response.json())
+
                     .then(data => {
+
                         if (data.success) {
-                            alert('Question removed successfully!');
+
+                            Swal.fire({
+
+                                title: "Success",
+
+                                text: "Question removed successfully!",
+
+                                icon: "success",
+
+                                confirmButtonText: "OK"
+
+                            });
+
                             fetchQuestions(); // Refresh the question list
+
                         }
+
                     })
+
                     .catch(error => console.error('Error removing question:', error));
+
             } else {
-                alert("Please select a question to remove.");
+
+                Swal.fire({
+
+                    title: "Warning",
+
+                    text: "Please select a question to remove.",
+
+                    icon: "warning",
+
+                    confirmButtonText: "OK"
+
+                });
+
             }
+
         }
+
+
 
         // Clear votes and answers
+
         function clearData() {
+
             if (confirm("Are you sure you want to clear all answers and votes? This action cannot be undone.")) {
+
                 fetch('/clear_data', {
+
                     method: 'POST'
+
                 })
+
                     .then(response => response.json())
+
                     .then(data => {
-                        alert('All votes and answers cleared.');
+
+                        Swal.fire({
+
+                            title: "Cleared",
+
+                            text: "All votes and answers cleared.",
+
+                            icon: "info",
+
+                            confirmButtonText: "OK"
+
+                        });
+
                         fetchAnswers(); // Refresh the answers list after clearing
+
                     })
+
                     .catch(error => console.error('Error clearing data:', error));
+
             }
+
         }
 
-        // Event listeners
+
+
+        function fetchUsers() {
+
+            fetch('/get_users') // Adjust this endpoint to match your backend route
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    const usersContainer = document.getElementById('users');
+
+                    usersContainer.innerHTML = ''; // Clear existing users
+
+
+
+                    data.users.forEach(user => {
+
+                        const userCard = document.createElement('div');
+
+                        userCard.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'mb-4');
+
+
+
+                        userCard.innerHTML = `
+
+                    <div class="card text-center shadow-sm">
+
+                        <div class="card-body">
+
+                            <img src="${user.avatar}" alt="${user.username}'s avatar" 
+
+                                 class="rounded-circle mb-3" style="width: 80px; height: 80px;">
+
+                            <h5 class="card-title text-primary">${user.username}</h5>
+
+                            <p class="card-text"><strong>Score:</strong> ${user.score}</p>
+
+                            <button class="btn btn-success" onclick="changeScore('${user.username}', 1)">Increase Score</button>
+
+                            <button class="btn btn-warning mt-2" onclick="changeScore('${user.username}', -1)">Decrease Score</button>
+
+                            <button class="btn btn-danger mt-2" onclick="deleteUser('${user.username}')">Delete</button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+                        usersContainer.appendChild(userCard);
+
+                    });
+
+                })
+
+                .catch(error => console.error('Error fetching users:', error));
+
+        }
+
+
+
+        function deleteUser(username) {
+
+            // Send request to backend to delete the user
+
+            fetch('/delete_user', {
+
+                method: 'POST',
+
+                headers: {
+
+                    'Content-Type': 'application/json',
+
+                },
+
+                body: JSON.stringify({ username: username }),
+
+            })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.success) {
+
+                        Swal.fire({
+
+                            icon: 'success',
+
+                            title: 'Success',
+
+                            text: 'User deleted successfully!',
+
+                        }).then(() => {
+
+                            fetchUsers(); // Re-fetch the updated user list after confirmation
+
+                        });
+
+                    } else {
+
+                        Swal.fire({
+
+                            icon: 'error',
+
+                            title: 'Error',
+
+                            text: 'Error deleting user: ' + data.message,
+
+                        });
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.error('Error deleting user:', error);
+
+                    Swal.fire({
+
+                        icon: 'error',
+
+                        title: 'Error',
+
+                        text: 'Error deleting user.',
+
+                    });
+
+                });
+
+        }
+
+
+
+
+
+        function changeScore(username, increment) {
+
+            fetch('/change_score', { // This is the backend route where the score update will happen
+
+                method: 'POST',
+
+                headers: {
+
+                    'Content-Type': 'application/json',
+
+                },
+
+                body: JSON.stringify({ username: username, increment: increment }),
+
+            })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.success) {
+
+                        fetchUsers(); // Refresh the user list to reflect the new scores
+
+                    } else {
+
+                        Swal.fire({
+
+                            icon: 'error',
+
+                            title: 'Error',
+
+                            text: 'Failed to update score.',
+
+                        });
+
+                    }
+
+                })
+
+                .catch(error => console.error('Error changing score:', error));
+
+        }
+
+
+
+
+
+        // Call fetchUsers periodically to update the UI
+
         window.onload = () => {
+
             fetchQuestions();
+
             fetchAnswers();
+
+            fetchUsers(); // Initial call
+
             setInterval(fetchQuestions, 7000);
+
             setInterval(fetchAnswers, 2000);
+
+            setInterval(fetchUsers, 2000); // Periodic updates for users
+
         };
+
     </script>
+
 </head>
 
+
+
 <body>
+
+
+
+
+
     <div class="container mt-5">
+
+        <div class="d-flex justify-content-center align-items-center mb-5">
+
+            <img src="../static/img/logo.webp" alt="Admin Logo" style="width: 400px; max-width: 100%; height: auto;">
+
+        </div>
+
+
+
         <h1 class="text-center mb-5 text-light">Admin Control Panel</h1>
 
+
+
         <div class="text-center mb-4 col-12 mx-auto">
+
             <label for="questionSelect" class="form-label text-light">Choose Next Question:</label>
+
             <select id="questionSelect" class="form-select">
+
                 <option selected disabled>Loading questions...</option>
+
             </select>
-            <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-success btn-lg w-50 me-2" onclick="addQuestion()">Add Question</button>
-                <button class="btn btn-danger btn-lg w-50 me-2" onclick="removeQuestion()">Remove Selected
-                    Question</button>
-            </div>
 
             <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-primary btn-lg w-50 me-2" onclick="clearData(); setNextQuestion()">Set Next
+
+                <button class="btn btn-success btn-lg w-50 me-2" onclick="addQuestion()">Add Question</button>
+
+                <button class="btn btn-danger btn-lg w-50 me-2" onclick="removeQuestion()">Remove Selected
+
                     Question</button>
-                <button class="btn btn-warning btn-lg w-50" onclick="revealVotes()">Reveal Votes</button>
+
             </div>
+
+
+
+            <div class="d-flex justify-content-center mt-3">
+
+                <button class="btn btn-primary btn-lg w-50 me-2" onclick="clearData(); setNextQuestion()">Set Next
+
+                    Question</button>
+
+                <button class="btn btn-warning btn-lg w-50" onclick="revealVotes()">Reveal Votes</button>
+
+            </div>
+
         </div>
+
+
 
         <!-- List of answers with votes stacked vertically -->
+
         <div id="answers" class="row"></div>
 
+
+
         <!-- Clear data button -->
+
         <div class="text-center mb-4">
+
             <button class="btn btn-danger btn-lg" onclick="clearData()">Clear Votes and Answers</button>
+
         </div>
+
+        <div class="container mt-4">
+
+            <h2 class="text-center text-light mb-4">Players</h2>
+
+            <div id="users" class="row justify-content-center"></div>
+
+        </div>
+
+
+
     </div>
 
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
+
 
 </html>

@@ -1,513 +1,1251 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
+
+    <meta name="description"
+        content="Play Quiz Game - An exciting multiplayer game of deception and strategy. Join now and test your bluffing skills!">
+
+    <meta name="keywords"
+        content="Quiz Game, online game, multiplayer game, poker game, bluffing game, strategy game">
+
+    <meta name="author" content="KF Game">
+
+
+
+    <!-- Open Graph / Facebook -->
+
+    <meta property="og:type" content="website">
+
+    <meta property="og:url" content="https:/you-website-link/">
+
+    <meta property="og:title" content="Quiz Game - Online Multiplayer Game">
+
+    <meta property="og:description" content="Join the exciting world of Quiz Game - where strategy meets deception!">
+
+    <meta property="og:image" content="https:/you-website-link/static/img/logo.webp">
+
+
+
+    <!-- Twitter -->
+
+    <meta property="twitter:card" content="summary_large_image">
+
+    <meta property="twitter:url" content="https:/you-website-link/">
+
+    <meta property="twitter:title" content="Quiz Game - Online Multiplayer Game">
+
+    <meta property="twitter:description"
+        content="Join the exciting world of Quiz Game - where strategy meets deception!">
+
+    <meta property="twitter:image" content="https:/you-website-link/static/img/logo.webp">
+
+
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="twitter:title" content="Quiz Game - Multiplayer Card Game">
+
+    <meta name="twitter:description"
+        content="Join Quiz Game for exciting multiplayer card games with friends and test your bluffing skills.">
+
+    <meta name="twitter:image" content="{{ url_for('static', filename='fav/logo.png') }}">
+
+    <link rel="icon" href="{{ url_for('static', filename='fav/favicon.ico') }}" type="image/x-icon">
+
+
+
+    <title>Quiz Game - Multiplayer Game</title>
+
+
+
+    <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <!-- Socket.io Script -->
+
     <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.0.0/dist/socket.io.min.js"></script>
+
+
+
+    <!-- Bootstrap Bundle JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!-- Favicon -->
+
+    <link rel="icon" href="{{ url_for('static', filename='fav/favicon.ico') }}" type="image/x-icon">
+
+
+
+    <!-- Custom CSS for Design -->
+
     <style>
-        .avatar-selection img {
-            width: 50px;
-            height: 50px;
-            margin: 5px;
-            border-radius: 50%;
-            cursor: pointer;
+        .swal2-html-container {
+
+            color: white !important;
+
         }
+
+
+
+        .swal2-title {
+
+            color: white !important;
+
+        }
+
+
+
+        .avatar-selection img {
+
+            width: 50px;
+
+            height: 50px;
+
+            margin: 5px;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+        }
+
 
         .correct-answer {
             box-shadow: 0px 4px 10px #7efc9bf7,
                 0px -4px 10px #7efc9bf7,
-                4px 0px 10px #7efc9bf7,
-                -4px 0px 10px #7efc9bf7;
+                inset 4px 0px 10px #7efc9bf7,
+                inset -4px 0px 10px #7efc9bf7;
+            border-radius: 10px;
+            /* Adjust the value as needed for the desired roundness */
         }
+
+
 
         .avatar-selection img.selected {
+
             border: 3px solid #007bff;
+
         }
+
+
 
         .card {
+
             color: #9C9C9C;
+
             background-color: #2F2F2F;
+
             border: 0px solid rgb(248, 7, 7);
+
             border-radius: 10px;
+
             overflow: hidden;
+
             margin: 0.25em;
+
         }
+
+
 
         .form-control {
+
             color: #9C9C9C !important;
+
             background-color: #2F2F2F;
+
             border: 1px solid transparent;
+
         }
+
+
 
         .form-control::placeholder {
+
             color: #9C9C9C !important;
+
             background-color: #2F2F2F;
+
             border: 1px solid transparent;
+
         }
+
+
 
         .form-control:focus {
+
             color: #FFFFFF;
+
             background-color: #3F3F3F;
+
         }
+
+
 
         .form-control:hover {
+
             background-color: #444444;
+
         }
+
+
 
         .card-body {
+
             display: flex;
+
             align-items: center;
+
             gap: 15px;
+
             padding: 15px;
+
             background-color: transparent;
+
         }
+
+
 
         body {
+
             position: relative;
-            background-image: url('../static/img/1.webp');
+
+            background-image: url('../static/img/bg.webp');
+
             background-size: cover;
-            /* background-position: center center; */
+
             background-repeat: no-repeat;
+
             background-color: rgba(0, 0, 0, 0.175);
+
         }
+
+
 
         .card-body img {
+
             margin-right: 15px;
+
         }
+
+
 
         .text-color {
+
             color: white;
+
         }
+
+
 
         .vote-btn {
+
             margin-left: auto;
+
         }
     </style>
+
 </head>
 
+
+
+
+
 <body>
+
+
+
     <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-5" style="position: relative;">
+            <!-- Empty div for left alignment -->
+            <div></div>
+
+            <!-- Logo in the center -->
+            <div class="text-center logo-container" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                <img src="../static/img/logo.webp" alt="Admin Logo"
+                    style="width: 400px; max-width: 100%; height: auto;">
+            </div>
+
+            <!-- Username, Avatar, and Logout on the right -->
+            <div class="text-center">
+                <h2>
+                    <label for="userName" class="form-label text-color">
+                        {% if session['username'] %}
+                        <img src="{{ session['avatar'] }}" alt="Avatar" class="avatar"
+                            style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+                        {{ session['username'] }}
+                        {% else %}
+                        Guest
+                        {% endif %}
+                    </label>
+                </h2>
+                <form action="/logout" method="POST" class="mt-2  justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+
 
         <div class="row mb-3">
-            <div class="col-md-6">
-                <h2><label for="userName" class="form-label text-color">Your Name</label></h2>
-                <input type="text" class="form-control text-color" id="userName" placeholder="Enter your name">
-            </div>
 
-            <div class="col-md-6">
-                <h2><label for="avatarSelection" class="form-label text-color">Choose an Avatar</label></h2>
-                <div id="avatarSelection" class="avatar-selection">
-                    <img src="{{ url_for('static', filename='avatars/1.png') }}" alt="Avatar 1"
-                        data-avatar="/static/avatars/1">
-                    <img src="{{ url_for('static', filename='avatars/2.png') }}" alt="Avatar 2"
-                        data-avatar="/static/avatars/2">
-                    <img src="{{ url_for('static', filename='avatars/3.png') }}" alt="Avatar 3"
-                        data-avatar="/static/avatars/3">
-                    <img src="{{ url_for('static', filename='avatars/4.png') }}" alt="Avatar 4"
-                        data-avatar="/static/avatars/4">
-                    <img src="{{ url_for('static', filename='avatars/5.png') }}" alt="Avatar 5"
-                        data-avatar="/static/avatars/5">
-                    <img src="{{ url_for('static', filename='avatars/6.png') }}" alt="Avatar 6"
-                        data-avatar="/static/avatars/6">
-                    <img src="{{ url_for('static', filename='avatars/7.png') }}" alt="Avatar 7"
-                        data-avatar="/static/avatars/7">
-                    <img src="{{ url_for('static', filename='avatars/8.png') }}" alt="Avatar 8"
-                        data-avatar="/static/avatars/8">
-                </div>
-            </div>
+
+
         </div>
 
-        <div class="d-flex justify-content-center align-items-center ">
-            <h2 id="question-text" class="text-color">Loading question...</h2>
+        <div class="d-flex justify-content-center align-items-center">
+            <h2 id="question-text" class="text-white" style="
+                       border-radius: 30px; 
+                       padding: 15px; 
+                       max-width: 80%; 
+                       text-align: center; ">
+                Loading question...
+            </h2>
         </div>
 
-        <!-- Answer Submission -->
+
+
+
         <div class="container mt-5">
+
             <div class="row justify-content-center">
+
                 <div class="col-md-12">
+
                     <div class="mb-3">
+
                         <label for="answerInput" class="form-label text-color">Your Answer</label>
+
                         <input type="text" class="form-control form-control-lg" id="answerInput"
                             placeholder="Enter your answer" />
+
                     </div>
+
                     <button id="submitAnswer" class="btn btn-lg btn-success w-100">Submit Answer</button>
+
                 </div>
+
             </div>
+
         </div>
+
         <hr>
+
         <div id="answers-list">
-            <!-- Answers will be dynamically inserted here -->
+
+        </div>
+
+        <div class="container mt-4">
+
+            <h2 class="text-center text-light mb-4">Scoreboard</h2>
+
+            <div id="users" class="row justify-content-center"></div>
+
         </div>
 
         <div id="reveal-button" class="mt-3">
+
             <button id="revealVotes" class="btn btn-success" style="display: none;">Reveal Votes</button>
+
         </div>
+
     </div>
 
+
+
     <script>
-        var socket = io.connect('https://' + document.domain + ':' + location.port);
-        var selectedAvatar = '';
-        var userName = '';
+
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        var selectedAvatar = "{{ avatar }}";
+
+        var userName = "{{ username }}"; // Get the username from the Flask session
+
+        var userId = "{{ username }}"; // Get the username from the Flask session
+
+
+
         document.addEventListener("DOMContentLoaded", function () {
+
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+
                 return new bootstrap.Tooltip(tooltipTriggerEl);
+
             });
+
         });
 
-        // Avatar selection handler
+
+
         document.querySelectorAll('#avatarSelection img').forEach(function (img) {
+
             img.addEventListener('click', function () {
+
                 document.querySelectorAll('#avatarSelection img').forEach(function (img) {
+
                     img.classList.remove('selected');
+
                 });
+
                 img.classList.add('selected');
+
                 selectedAvatar = img.getAttribute('data-avatar');
+
             });
+
         });
 
-        // Handle the reveal votes button
+
+
         document.getElementById('revealVotes').addEventListener('click', function () {
+
             fetch('/reveal_votes_admin', {
+
                 method: 'POST',
+
             }).then(response => response.json())
+
                 .then(data => {
+
                     console.log('Votes revealed', data);
+
                     loadAnswers();
+
                 });
+
         });
 
-        // Function to load answers and votes
-        // Function to load answers and votes
-        function loadAnswers() {
-            fetch('/get_game_state')
+        function fetchUsers() {
+
+            fetch('/get_users') // Adjust this endpoint to match your backend route
+
                 .then(response => response.json())
+
                 .then(data => {
+
+                    const usersContainer = document.getElementById('users');
+
+                    usersContainer.innerHTML = ''; // Clear existing users
+
+
+
+                    data.users.forEach(user => {
+
+                        const userCard = document.createElement('div');
+
+                        userCard.classList.add('col-sm-6', 'col-md-2', 'col-lg-2', 'mb-4');
+
+
+
+                        userCard.innerHTML = `
+
+                    <div class="card text-center shadow-sm">
+
+                        <div class="card-body">
+
+                            <img src="${user.avatar}" alt="${user.username}'s avatar" 
+
+                                 class="rounded-circle mb-3" style="width: 50px; height: 50px;">
+
+                            <p class="card-text"><strong>Score:</strong> ${user.score}</p>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+                        usersContainer.appendChild(userCard);
+
+                    });
+
+                })
+
+                .catch(error => console.error('Error fetching users:', error));
+
+        }
+
+        function loadAnswers() {
+
+            fetch('/get_game_state')
+
+                .then(response => response.json())
+
+                .then(data => {
+
                     const answersList = document.getElementById('answers-list');
-                    answersList.innerHTML = ''; // Clear previous answers
+
+                    answersList.innerHTML = '';
+
+
 
                     const rowDiv = document.createElement('div');
-                    rowDiv.classList.add('row'); // Create a row container for the cards
 
-                    data.answers.forEach(answer => {
-                        // Create the card element
+                    rowDiv.classList.add('row');
+
+
+
+                    let sortedAnswers = [...data.answers];
+
+                    sortedAnswers.sort((a, b) => b.random_num - a.random_num);
+
+
+
+                    sortedAnswers.forEach(answer => {
+
                         var answerDiv = document.createElement('div');
-                        answerDiv.classList.add('col-md-12'); // Each card takes up full width
-                        answerDiv.classList.add('card', 'mt-3');
+
+                        answerDiv.classList.add('col-md-12', 'card', 'mt-3');
+
                         answerDiv.innerHTML = `
+
                     <div class="card-body">
+
                         <!-- Avatar and name are hidden initially -->
-                        <div class="answer-info" style="display: none;">
-                            <img src="${answer.avatar}" alt="${answer.user_id}'s Avatar" class="rounded-circle" width="50" data-bs-toggle="tooltip" title="${answer.user_id}">
-                            <p class="card-text"><strong>${answer.user_id}</strong>: ${answer.text}</p>
+
+                        <div class="answer-info" style="display: ${data.reveal ? 'block' : 'none'};">
+
+                            <img src="${answer.avatar}" alt="${answer.username}'s Avatar" class="rounded-circle" width="50" data-bs-toggle="tooltip" title="${answer.username}">
+
+                            <p class="card-text"><strong>${answer.username}</strong>: ${answer.text}</p>
+
                         </div>
+
                         <!-- Reveal button and vote button -->
+
                         <button class="btn btn-light vote-btn" data-answer-id="${answer.id}" ${data.reveal ? 'disabled' : ''}>Vote</button>
-                        <div class="votes" id="votes-${answer.id}" style="display: none;">Votes: ${answer.votes.join(', ')}</div>
+
+                        <div class="votes" id="votes-${answer.id}" style="display: ${data.reveal ? 'block' : 'none'};">
+
+                            Votes: ${answer.votes.join(', ')}
+
+                        </div>
+
                     </div>
+
                 `;
-                        rowDiv.appendChild(answerDiv); // Add the card to the row container
+
+                        rowDiv.appendChild(answerDiv);
+
                     });
 
-                    answersList.appendChild(rowDiv); // Append the row container to the answers list
 
-                    // Initialize tooltips
+
+                    answersList.appendChild(rowDiv);
+
+
+
                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
                     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+
                         return new bootstrap.Tooltip(tooltipTriggerEl);
+
                     });
 
-                    // If votes are revealed, display them
+
+
                     if (data.reveal) {
-                        data.answers.forEach(answer => {
+
+                        sortedAnswers.forEach(answer => {
+
                             const voteDiv = document.getElementById(`votes-${answer.id}`);
+
                             voteDiv.innerHTML = `Votes: ${answer.votes.join(', ')}`;
+
                             voteDiv.style.display = 'block';
 
-                            // Reveal the name and avatar
-                            const answerInfo = answerDiv.querySelector('.answer-info');
+
+
+                            const answerCard = document.querySelector(`[data-answer-id="${answer.id}"]`)
+
+                                .closest('.card');
+
+                            const answerInfo = answerCard.querySelector('.answer-info');
+
                             answerInfo.style.display = 'block';
+
                         });
 
-                        // Disable vote buttons once votes are revealed
+
+
                         const voteButtons = document.querySelectorAll('.vote-btn');
+
                         voteButtons.forEach(button => button.disabled = true);
+
                     }
+
+
+
+                    document.querySelectorAll('.vote-btn').forEach(function (button) {
+
+                        button.addEventListener('click', function () {
+
+                            if (!userName) {
+
+                                Swal.fire({
+
+                                    title: "Oops!",
+
+                                    text: "Please enter your name before voting!",
+
+                                    icon: "warning"
+
+                                });
+
+                                return;
+
+                            }
+
+                            if (!selectedAvatar) {
+
+                                Swal.fire({
+
+                                    title: "Oops!",
+
+                                    text: "Please select an avatar before voting!",
+
+                                    icon: "warning"
+
+                                });
+
+                                return;
+
+                            }
+
+
+
+                            const answerId = button.getAttribute('data-answer-id');
+
+                            fetch('/vote', {
+
+                                method: 'POST',
+
+                                headers: {
+
+                                    'Content-Type': 'application/json'
+
+                                },
+
+                                body: JSON.stringify({
+
+                                    answer_id: answerId,
+
+                                    username: userName,
+
+                                    avatar: selectedAvatar
+
+                                })
+
+                            }).then(response => response.json())
+
+                                .then(data => {
+
+                                    console.log('Vote submitted', data);
+
+                                    Swal.fire({
+
+                                        title: "Good job!",
+
+                                        text: "Vote successful!",
+
+                                        icon: "success"
+
+                                    });
+
+                                    loadAnswers();
+
+                                });
+
+                        });
+
+                    });
+
                 });
+
         }
-        // Listen for the 'next_question' event to reset the state
+
+
+
         socket.on('next_question', function (data) {
-            // Update the question text
+
             document.getElementById('question-text').innerText = data.question.text;
 
-            // Clear the answer input and reset avatar selection
-            document.getElementById('answerInput').value = ''; // Clear the answer input field
-            selectedAvatar = ''; // Reset the selected avatar
-            // When the question changes
+
+
+            document.getElementById('answerInput').value = '';
+
+            selectedAvatar = "{{ avatar }}";
+
             document.getElementById('userName').disabled = false;
+
             document.getElementById('submitAnswer').disabled = false;
-            // Remove pointer-events: none from all images in avatarSelection
+
             document.querySelectorAll('#avatarSelection img').forEach(function (img) {
-                img.style.removeProperty('pointer-events');  // Enable avatar selection
+
+                img.style.removeProperty('pointer-events');
+
             });
 
-            // Deselect all avatars
+
+
             document.querySelectorAll('#avatarSelection img').forEach(function (img) {
+
                 img.classList.remove('selected');
+
             });
+
+
 
             document.querySelectorAll('#avatarSelection img').forEach(function (img) {
-                img.classList.remove('selected'); // Deselect all avatars
+
+                img.classList.remove('selected');
+
             });
 
-            // Remove any previous voting status from localStorage
-            localStorage.removeItem('hasVoted'); // Clear voting status
 
-            // Reload answers and votes so that users can vote again
+
+            localStorage.removeItem('hasVoted');
+
+
+
             loadAnswersAndVotes();
+
         });
+
+
+
 
 
         window.onload = loadAnswers;
-        // Set an interval to reload answers and votes every 2 seconds (2000 milliseconds)
-        setInterval(loadAnswersAndVotes, 2000);
-        // Function to load answers and votes
-        function loadAnswersAndVotes() {
-            fetch('/get_game_state')
-                .then(response => response.json())
-                .then(data => {
-                    const answersList = document.getElementById('answers-list');
-                    answersList.innerHTML = ''; // Clear previous answers
 
-                    // Add a flexbox container for the answer cards
+        // setInterval(loadAnswersAndVotes, 2000);
+
+
+
+        function loadAnswersAndVotes() {
+
+            fetch('/get_game_state')
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    const answersList = document.getElementById('answers-list');
+
+                    answersList.innerHTML = '';
+
                     answersList.style.display = 'flex';
+
                     answersList.style.flexWrap = 'wrap';
+
+
 
                     var userHasVoted = localStorage.getItem('hasVoted') === 'true';
 
-                    // Track if votes are revealed
+
+
                     let votesRevealed = data.reveal;
 
-                    data.answers.forEach(answer => {
-                        // Skip invisible answers
-                        if (answer.visible === false) return;
+
+
+                    let sortedAnswers = [...data.answers];
+
+                    sortedAnswers.sort((a, b) => b.random_num - a.random_num);
+
+
+
+                    sortedAnswers.forEach(answer => {
+
+                        if (!answer.visible) return;
+
+
 
                         var answerDiv = document.createElement('div');
-                        answerDiv.classList.add('card', 'mt-3', 'p-2');
-                        answerDiv.style.width = '48%';
+
+                        answerDiv.classList.add('col-sm-12', 'col-md-12', 'col-12', 'col-lg-6', 'mb-4');
+
 
 
                         answerDiv.innerHTML = `
+
+                    <div class="card text-center">
+
                     <div class="card-body">
-                        <img src="${answer.avatar}" alt="${answer.user_id}'s Avatar" class="rounded-circle answer-avatar" width="50" style="display: none;" data-bs-toggle="tooltip" title="${answer.user_id}">
-                        <p class="card-text answer-text"><strong class="answer-name" style="display: none;">${answer.user_id}</strong> ${answer.text}</p>
-                        <button class="btn btn-light vote-btn" data-answer-id="${answer.id}" ${votesRevealed ? 'disabled' : ''}>Vote</button>
+
+                        <img src="${answer.avatar}" alt="${answer.username}'s Avatar" class="rounded-circle answer-avatar" width="50" style="display: none;" data-bs-toggle="tooltip" title="${answer.username}">
+
+                        <p class="card-text answer-text"><strong class="answer-name" style="display: none;">${answer.username}</strong> ${answer.text}</p>
+
+                        <button class="btn btn-light vote-btn" data-answer-id="${answer.id}" ${votesRevealed || userHasVoted ? 'disabled' : ''}>Vote</button>
+
                         <div class="votes" id="votes-${answer.id}" style="display: ${votesRevealed ? 'block' : 'none'};">Votes: ${answer.votes.join(', ')}</div>
+
+                    </div>                    
+
                     </div>
+
+
+
                 `;
+
                         answersList.appendChild(answerDiv);
-                        // Add the correct-answer class if the answer is correct
+
+
+
                         if (answer.is_correct) {
+
                             answerDiv.classList.add('correct-answer');
+
                         }
 
-                        // Show answer details (avatar, name) if revealed
+
+
                         if (votesRevealed) {
+
                             const answerCard = answerDiv.querySelector('.card-body');
-                            answerCard.querySelector('.answer-avatar').style.display = 'inline-block'; // Show avatar
-                            answerCard.querySelector('.answer-name').style.display = 'inline'; // Show name
+
+                            answerCard.querySelector('.answer-avatar').style.display = 'inline-block';
+
+                            answerCard.querySelector('.answer-name').style.display = 'inline';
+
+
 
                             const voteDiv = document.getElementById(`votes-${answer.id}`);
+
                             voteDiv.style.display = 'block';
-                            voteDiv.innerHTML = `Votes: ${answer.votes.join(', ')}`;
+
+                            voteDiv.innerHTML = `Votes: ${answer.votes.map(vote => {
+
+                                // Add the title attribute for the tooltip
+
+                                return `<img src="${vote.avatar}" class="rounded-circle" width="30" alt="avatar" title="${vote.username}">`;
+
+                            }).join(' ')}`;
+
                         }
 
-                        // Handle vote submission
+
+
                         document.querySelectorAll('.vote-btn').forEach(function (button) {
+
                             button.addEventListener('click', function () {
-                                // Check if name and avatar are selected
+
                                 if (!userName) {
-                                    alert('Please enter your name before voting!');
+
+                                    Swal.fire({
+
+                                        title: "Oops!",
+
+                                        text: "Please enter your name before voting!",
+
+                                        icon: "warning"
+
+                                    });
+
                                     return;
+
                                 }
+
                                 if (!selectedAvatar) {
-                                    alert('Please select an avatar before voting!');
+
+                                    Swal.fire({
+
+                                        title: "Oops!",
+
+                                        text: "Please select an avatar before voting!",
+
+                                        icon: "warning"
+
+                                    });
+
                                     return;
+
                                 }
+
+
 
                                 var answerId = button.getAttribute('data-answer-id');
+
                                 fetch('/vote', {
+
                                     method: 'POST',
+
                                     headers: {
+
                                         'Content-Type': 'application/json'
+
                                     },
+
                                     body: JSON.stringify({
+
                                         answer_id: answerId,
-                                        user_id: userName,
-                                        avatar: selectedAvatar // Include avatar in the vote data
+
+                                        username: userName,
+
+                                        avatar: selectedAvatar
+
                                     })
+
                                 }).then(response => response.json())
+
                                     .then(data => {
+
                                         console.log('Vote submitted', data);
-                                        alert('Vote successful!');
-                                        localStorage.setItem('hasVoted', 'true'); // Store voting status
-                                        loadAnswersAndVotes(); // Refresh answers and votes after voting
+
+                                        Swal.fire({
+
+                                            title: "Good job!",
+
+                                            text: "Vote successful!",
+
+                                            icon: "success"
+
+                                        });
+
+                                        localStorage.setItem('hasVoted', 'true');
+
+                                        loadAnswersAndVotes();
+
                                     });
+
                             });
+
                         });
 
-                        // Show votes if revealed
-                        if (votesRevealed) {
-                            const voteDiv = document.getElementById(`votes-${answer.id}`);
-                            voteDiv.innerHTML = `Votes: ${answer.votes.map(vote => `<img src="${vote.avatar}.png" class="rounded-circle" width="30" alt="avatar">`).join(' ')}`;
-                            voteDiv.style.display = 'block';
-                        }
                     });
 
-                    // Show the Reveal Votes button if the admin has the right to reveal votes
-                    if (data.canRevealVotes) {
-                        document.getElementById('revealVotes').style.display = 'block';
-                    }
-                });
-        }
-        // Listen for the 'reveal_votes' event to show the votes
-        socket.on('reveal_votes', function (data) {
-            if (data.reveal) {
-                // Loop through each answer and apply the color
-                data.answers.forEach(answer => {
-                    const answerCard = document.getElementById('answer-' + answer.id); // Assuming each answer has a unique ID
 
-                    // Set the text and avatar
-                    answerCard.querySelector('.answer-text').textContent = answer.text;
-                    answerCard.querySelector('.answer-avatar').src = answer.avatar;
-                    answerCard.querySelector('.votes-list').textContent = 'Voted by: ' + (answer.votes.length > 0 ? answer.votes.join(", ") : "No one");
+
+                    if (data.canRevealVotes) {
+
+                        document.getElementById('revealVotes').style.display = 'block';
+
+                    }
+
                 });
+
+        }
+
+
+
+        socket.on('reveal_votes', function (data) {
+
+            if (data.reveal) {
+
+                data.answers.forEach(answer => {
+
+                    const answerCard = document.getElementById('answer-' + answer.id);
+
+
+
+                    answerCard.querySelector('.answer-text').textContent = answer.text;
+
+                    answerCard.querySelector('.answer-avatar').src = answer.avatar;
+
+                    answerCard.querySelector('.votes-list').textContent = 'Voted by: ' + (answer.votes
+
+                        .length > 0 ? answer.votes.join(", ") : "No one");
+
+                });
+
             }
+
         });
+
+
 
         socket.on('update_answers', function (data) {
+
             data.answers.forEach(answer => {
+
                 const answerCard = document.getElementById('answer-' + answer.id);
+
                 if (answer.visible) {
+
                     answerCard.style.display = 'block';
+
                 } else {
+
                     answerCard.style.display = 'none';
+
                 }
+
             });
+
         });
-        // Handle answer submission
+
         document.getElementById('submitAnswer').addEventListener('click', function () {
-            userName = document.getElementById('userName').value; // Get user name from input
+
+            userName = userName;
+
             var answerText = document.getElementById('answerInput').value;
-            var userId = userName || 'Anonymous'; // Use userName as a unique identifier
-            var questionId = 1; // Placeholder for actual question ID
 
-            // Check if name and avatar are selected
+
+
+            var questionId = 1;
+
+
+
             if (!userName) {
-                alert('Please enter your name!');
+
+                Swal.fire({
+
+                    title: "Oops!",
+
+                    text: "Please enter your name!",
+
+                    icon: "warning",
+
+                    confirmButtonText: "OK"
+
+                });
+
                 return;
+
             }
+
             if (!selectedAvatar) {
-                alert('Please select an avatar!');
+
+                Swal.fire({
+
+                    title: "Oops!",
+
+                    text: "Please select an avatar!",
+
+                    icon: "warning",
+
+                    confirmButtonText: "OK"
+
+                });
+
                 return;
+
             }
 
-            // Submit answer along with name, avatar, and answer text
-            fetch('/submit_answer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    answer: answerText,
-                    user_id: userId,
-                    question_id: questionId,
-                    avatar: selectedAvatar
-                })
-            }).then(response => response.json())
-                .then(data => {
-                    console.log('Answer submitted', data);
-                    alert('Answer submitted!');
 
-                    // Disable name and avatar inputs after submitting answer
-                    document.getElementById('userName').disabled = true;
-                    document.getElementById('avatarSelection').querySelectorAll('img').forEach(img => {
-                        img.style.pointerEvents = 'none'; // Disable avatar selection
+
+            fetch('/submit_answer', {
+
+                method: 'POST',
+
+                headers: {
+
+                    'Content-Type': 'application/json'
+
+                },
+
+                body: JSON.stringify({
+
+                    answer: answerText,
+
+                    username: userId,
+
+                    question_id: questionId,
+
+                    avatar: selectedAvatar
+
+                })
+
+            }).then(response => response.json())
+
+                .then(data => {
+
+                    console.log('Answer submitted', data);
+
+                    Swal.fire({
+
+                        title: "Good job!",
+
+                        text: "Answer submitted!",
+
+                        icon: "success"
+
                     });
 
-                    // Disable the Submit Answer button after submission
+                    document.getElementById('userName').disabled = true;
+
+                    document.getElementById('avatarSelection').querySelectorAll('img').forEach(img => {
+
+                        img.style.pointerEvents = 'none';
+
+                    });
+
+
+
                     document.getElementById('submitAnswer').disabled = true;
+
                 });
+
         });
 
-        // Disable the vote button after voting
+
+
         function handleVoteButtonClick(answerId) {
+
             fetch('/vote', {
+
                 method: 'POST',
+
                 headers: {
+
                     'Content-Type': 'application/json'
+
                 },
+
                 body: JSON.stringify({
+
                     answer_id: answerId,
+
+                    username: userName,
+
+                    avatar: selectedAvatar
+
                 })
+
             }).then(response => response.json())
-                .then(data => {
-                    alert('You voted for answer ID: ' + answerId);
 
-                    // Disable the vote button to prevent multiple votes
+                .then(data => {
+
+                    Swal.fire({
+
+                        title: "Good job!",
+
+                        text: "You voted for answer ID: " + answerId,
+
+                        icon: "success"
+
+                    });
+
+
+
                     document.querySelector(`[data-answer-id="${answerId}"]`).disabled = true;
+
                 });
+
         }
 
-        // Add click event listener for vote buttons dynamically
+
+
         function addVoteListeners() {
+
             document.querySelectorAll('.vote-btn').forEach(function (button) {
+
                 button.addEventListener('click', function () {
+
                     var answerId = button.getAttribute('data-answer-id');
+
                     handleVoteButtonClick(answerId);
+
                 });
+
             });
+
         }
 
-        // Call this function to add event listeners to vote buttons after answers are loaded
+
+
         addVoteListeners();
-        // Load the initial current question when the page loads
+
+
+
         function loadCurrentQuestion() {
+
             fetch('/get_game_state')
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     if (data.current_question) {
+
                         document.getElementById('question-text').innerText = data.current_question.text;
+
                     } else {
+
                         document.getElementById('question-text').innerText = "No question selected.";
+
                     }
+
                 });
+
         }
 
-        // Load answers and votes on page load
+
+
         window.onload = function () {
 
-            localStorage.removeItem('hasVoted'); // Remove any stored voting status
-            loadCurrentQuestion(); // Load the current question on page load
-            loadAnswersAndVotes(); // Load answers and votes
-            setInterval(loadAnswersAndVotes, 2000); // Reload answers and votes every 2 seconds
+
+
+            localStorage.removeItem('hasVoted');
+
+            fetchUsers(); // Initial call
+
+            // setInterval(fetchUsers, 2000);
+
+            loadCurrentQuestion();
+
+            loadAnswersAndVotes();
+
+            // setInterval(loadAnswersAndVotes, 2000);
+
         };
 
     </script>
+
+
+
     <script>
+
         const socket = io.connect('http://localhost:5000');
 
-        // Clear answers and votes when a new question is set
+
+
         socket.on('next_question_cleared', () => {
-            document.getElementById('answers').innerHTML = ''; // Clear answers section
+
+            document.getElementById('answers').innerHTML = '';
+
             console.log("Cleared answers and votes for the next question");
-            alert("Get ready for the next question!");
+
+            Swal.fire({
+
+                title: "Get ready!",
+
+                text: "Get ready for the next question!",
+
+                icon: "info",
+
+                confirmButtonText: "Next"
+
+            });
+
         });
+
     </script>
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
 </body>
+
+
 
 </html>

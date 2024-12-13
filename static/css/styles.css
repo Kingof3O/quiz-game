@@ -1,0 +1,46 @@
+/* Global Styles */
+body {
+    position: relative;
+    background-image: url('../static/img/bg.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0.175);
+    min-height: 100vh;
+}
+
+/* SweetAlert2 Customizations */
+.swal2-html-container {
+    color: white !important;
+}
+
+.swal2-title {
+    color: white !important;
+}
+
+/* Avatar Selection Styles */
+.avatar-selection img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 5px;
+    border: 2px solid transparent;
+}
+
+.avatar-selection img.selected {
+    border-color: #4CAF50;
+}
+
+/* Game Page Specific Styles */
+.game-card {
+    background-color: #2F2F2F;
+    border-radius: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .avatar-selection img {
+        width: 40px;
+        height: 40px;
+    }
+}
