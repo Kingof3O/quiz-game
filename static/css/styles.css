@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
     position: relative;
-    background-image: url('../static/img/bg.webp');
+    background-image: url('../../static/img/bg.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-color: rgba(0, 0, 0, 0.175);
@@ -44,3 +44,33 @@ body {
         height: 40px;
     }
 }
+.swal2-html-container {
+    color: white !important;
+}
+
+.swal2-title {
+    color: white !important;
+}
+
+
+
+.card {
+    background-color: #2F2F2F;
+    border-radius: 10px;
+}
+
+.form-control {
+    color: white;
+    background-color: #1C1C1C;
+    border: 0;
+}
+
+.form-control::placeholder {
+    color: #B5B5B5;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    border-color: #007BFF;
+}
+
